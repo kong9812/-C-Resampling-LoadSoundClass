@@ -4,31 +4,31 @@
 #include "main.h"
 
 //*****************************************************************************
-// ƒ}ƒNƒ’è‹`
+// ãƒã‚¯ãƒ­å®šç¾©
 //*****************************************************************************
-// ƒ`ƒƒƒ“ƒN‚ğ’T‚·ƒ‹[ƒv—p
-#define FLAG_CHUNK_FMT		(1)			// fmt‚Ìƒtƒ‰ƒO
-#define FLAG_CHUNK_DATA		(1<<1)		// data‚Ìƒtƒ‰ƒO
-#define FLAG_CHUNK_END		(3)			// endƒ|ƒCƒ“ƒg
-// ƒ`ƒƒƒ“ƒN
-#define CHUNK_FMT			("fmt ")	// fmt‚Ìƒ`ƒƒƒ“ƒN
-#define CHUNK_DATA			("data")	// data‚Ìƒ`ƒƒƒ“ƒN
-#define CHUNK_SIZE			(4)			// ƒ`ƒƒƒ“ƒN‚ÌƒoƒCƒg”
-// ”»’è—p
-#define CHUNK_SAME			(0)			// memcpy‚Ì–ß‚è’l(“¯‚¶)
+// ãƒãƒ£ãƒ³ã‚¯ã‚’æ¢ã™ãƒ«ãƒ¼ãƒ—ç”¨
+#define FLAG_CHUNK_FMT		(1)			// fmtã®ãƒ•ãƒ©ã‚°
+#define FLAG_CHUNK_DATA		(1<<1)		// dataã®ãƒ•ãƒ©ã‚°
+#define FLAG_CHUNK_END		(3)			// endãƒã‚¤ãƒ³ãƒˆ
+// ãƒãƒ£ãƒ³ã‚¯
+#define CHUNK_FMT			("fmt ")	// fmtã®ãƒãƒ£ãƒ³ã‚¯
+#define CHUNK_DATA			("data")	// dataã®ãƒãƒ£ãƒ³ã‚¯
+#define CHUNK_SIZE			(4)			// ãƒãƒ£ãƒ³ã‚¯ã®ãƒã‚¤ãƒˆæ•°
+// åˆ¤å®šç”¨
+#define CHUNK_SAME			(0)			// memcpyã®æˆ»ã‚Šå€¤(åŒã˜)
 
 //*****************************************************************************
-// \‘¢‘Ì
+// æ§‹é€ ä½“
 //*****************************************************************************
 #pragma pack(push, 1)
-typedef struct	// RIFFƒ`ƒƒƒ“ƒN 
+typedef struct	// RIFFãƒãƒ£ãƒ³ã‚¯ 
 {
 	char	riffChunk[4];
 	long	riffSize;
 	char	waveChunk[4];
 }RIFF_CHUNK;
 
-typedef struct	// fmt ƒ`ƒƒƒ“ƒN 
+typedef struct	// fmt ãƒãƒ£ãƒ³ã‚¯ 
 {
 	char	fmtChunk[4];
 	long	fmtSize;
@@ -40,14 +40,14 @@ typedef struct	// fmt ƒ`ƒƒƒ“ƒN
 	short	fmtBitPerSample;
 }FMT_CHUNK;
 
-typedef struct	// dataƒ`ƒƒƒ“ƒN 
+typedef struct	// dataãƒãƒ£ãƒ³ã‚¯ 
 {
 	char	dataChunk[4];
 	long	waveSize;
 	short	*waveData;
 }DATA_CHUNK;
 
-typedef struct	// WAVƒtƒ@ƒCƒ‹ 
+typedef struct	// WAVãƒ•ã‚¡ã‚¤ãƒ« 
 {
 	RIFF_CHUNK	riff;
 	FMT_CHUNK	fmt;
@@ -56,26 +56,26 @@ typedef struct	// WAVƒtƒ@ƒCƒ‹
 #pragma pack(pop)
 
 //*****************************************************************************
-// ƒNƒ‰ƒX
+// ã‚¯ãƒ©ã‚¹
 //*****************************************************************************
 class LOAD_WAV
 {
 public:
-	LOAD_WAV();
+	LOAD_WAV(){};
 	~LOAD_WAV();
 
-	// ƒTƒEƒ“ƒh‚Ì“Ç‚İ‚İ
+	// ã‚µã‚¦ãƒ³ãƒ‰ã®èª­ã¿è¾¼ã¿
 	bool OpenSound(HWND hWnd, char fileName[], char soundPath[]);
 
-	// WAVƒtƒ@ƒCƒ‹‚Ì“Ç‚İ‚Ş(WAVEFORMATEX\‘¢‘Ì)
+	// WAVãƒ•ã‚¡ã‚¤ãƒ«ã®èª­ã¿è¾¼ã‚€(WAVEFORMATEXæ§‹é€ ä½“)
 	WAVEFORMATEX LoadWavFile(const char *path);
 
-	// WAVƒtƒ@ƒCƒ‹‚Ìî•ñ‚ğæ“¾
+	// WAVãƒ•ã‚¡ã‚¤ãƒ«ã®æƒ…å ±ã‚’å–å¾—
 	WAV_FILE GetWavFile(void);
 
 private:
-	WAV_FILE	wavFile;			// WAVƒtƒ@ƒCƒ‹
-	char		oldPath[CHAR_MAX];	// ‰Šú‚ÌƒpƒX
+	WAV_FILE	wavFile;			// WAVãƒ•ã‚¡ã‚¤ãƒ«
+	char		oldPath[CHAR_MAX];	// åˆæœŸã®ãƒ‘ã‚¹
 
 };
 
