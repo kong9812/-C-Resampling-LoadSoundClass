@@ -1,16 +1,15 @@
 #include "loadSoundClass.h"
 
 //=============================================================================
-// ‰Šú‰»
+// åˆæœŸåŒ–
 //=============================================================================
 LOAD_WAV::LOAD_WAV()
 {
-	int i = 0;
 
 }
 
 //=============================================================================
-// I—¹ˆ—
+// çµ‚äº†å‡¦ç†
 //=============================================================================
 LOAD_WAV::~LOAD_WAV()
 {
@@ -22,7 +21,7 @@ LOAD_WAV::~LOAD_WAV()
 }
 
 //=============================================================================
-// ƒTƒEƒ“ƒh‚Ì“Ç‚İ‚İ
+// ã‚µã‚¦ãƒ³ãƒ‰ã®èª­ã¿è¾¼ã¿
 //=============================================================================
 bool LOAD_WAV::OpenSound(HWND hWnd, char fileName[], char soundPath[])
 {
@@ -30,12 +29,12 @@ bool LOAD_WAV::OpenSound(HWND hWnd, char fileName[], char soundPath[])
 	char path[CHAR_MAX];
 	WIN32_FIND_DATA fileData;
 
-	// ƒJƒŒƒ“ƒgƒfƒBƒŒƒNƒgƒŠ‚ğæ‚èo‚·
+	// ã‚«ãƒ¬ãƒ³ãƒˆãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã‚’å–ã‚Šå‡ºã™
 	GetCurrentDirectory(MAX_PATH, oldPath);
 
 	path[0] = '\0';
 	ofn.hwndOwner = hWnd;
-	memset(&ofn, 0, sizeof(OPENFILENAME));  //\‘¢‘Ì‚ğ0‚ÅƒNƒŠƒA
+	memset(&ofn, 0, sizeof(OPENFILENAME));  //æ§‹é€ ä½“ã‚’0ã§ã‚¯ãƒªã‚¢
 	ofn.lStructSize = sizeof(OPENFILENAME);
 	ofn.lpstrInitialDir = oldPath;
 	ofn.lpstrFilter = "sound file(*.wav)\0*.wav\0\0";
@@ -50,92 +49,92 @@ bool LOAD_WAV::OpenSound(HWND hWnd, char fileName[], char soundPath[])
 
 	strcpy(soundPath, path);
 
-	// ƒtƒ@ƒCƒ‹–¼‚ğæ‚èo‚·
+	// ãƒ•ã‚¡ã‚¤ãƒ«åã‚’å–ã‚Šå‡ºã™
 	FindFirstFile(ofn.lpstrFile, &fileData);
 
-	// ƒtƒ@ƒCƒ‹–¼
+	// ãƒ•ã‚¡ã‚¤ãƒ«å
 	fileName = fileData.cFileName;
 
-	// ƒJƒŒƒ“ƒgƒfƒBƒŒƒNƒgƒŠ‚ğİ’è‚·‚é
+	// ã‚«ãƒ¬ãƒ³ãƒˆãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã‚’è¨­å®šã™ã‚‹
 	SetCurrentDirectory(oldPath);
 
 	return TRUE;
 }
 
 //*****************************************************************************
-// WAVƒtƒ@ƒCƒ‹‚Ì“Ç‚İ‚Ş(WAVEFORMATEX\‘¢‘Ì)
+// WAVãƒ•ã‚¡ã‚¤ãƒ«ã®èª­ã¿è¾¼ã‚€(WAVEFORMATEXæ§‹é€ ä½“)
 //*****************************************************************************
 WAVEFORMATEX LOAD_WAV::LoadWavFile(const char *path)
 {
-	WAVEFORMATEX	pcm;				// WAVEFORMATEX\‘¢‘Ì
-	FILE			*fp;				// ƒtƒ@ƒCƒ‹\‘¢‘Ì							
-	int				chunkFlag = NULL;	// ƒ`ƒƒƒ“ƒN‚ğ’T‚·ƒ‹[ƒv‚Ìƒtƒ‰ƒO
+	WAVEFORMATEX	pcm;				// WAVEFORMATEXæ§‹é€ ä½“
+	FILE			*fp;				// ãƒ•ã‚¡ã‚¤ãƒ«æ§‹é€ ä½“							
+	int				chunkFlag = NULL;	// ãƒãƒ£ãƒ³ã‚¯ã‚’æ¢ã™ãƒ«ãƒ¼ãƒ—ã®ãƒ•ãƒ©ã‚°
 
-	{// ƒ[ƒJƒ‹•Ï”‚Ì‰Šú‰»
+	{// ãƒ­ãƒ¼ã‚«ãƒ«å¤‰æ•°ã®åˆæœŸåŒ–
 		memset(&pcm, 0, sizeof(WAVEFORMATEX));
 		memset(&fp, 0, sizeof(FILE));
 	}
-	// ƒtƒ@ƒCƒ‹‚Ì€”õ
+	// ãƒ•ã‚¡ã‚¤ãƒ«ã®æº–å‚™
 	fopen_s(&fp, path, "rb");
 
-	// RIFF‚Ì“Ç‚İ‚İ
+	// RIFFã®èª­ã¿è¾¼ã¿
 	fread(&wavFile.riff, sizeof(RIFF_CHUNK), 1, fp);
 
-	// FMT‚ÆDATA‚Ì“Ç‚İ‚İ
+	// FMTã¨DATAã®èª­ã¿è¾¼ã¿
 	while (chunkFlag != FLAG_CHUNK_END)
 	{
 		char	chunk[CHUNK_SIZE];
 		long	size = 0;
 
-		// ƒ`ƒƒƒ“ƒN‚ÆƒTƒCƒY‚Ì“Ç‚İ‚İ
+		// ãƒãƒ£ãƒ³ã‚¯ã¨ã‚µã‚¤ã‚ºã®èª­ã¿è¾¼ã¿
 		fread(&chunk, sizeof(chunk), 1, fp);
 		fread(&size, sizeof(size), 1, fp);
 
-		// fmtƒ`ƒƒƒ“ƒN
+		// fmtãƒãƒ£ãƒ³ã‚¯
 		if (memcmp(chunk, CHUNK_FMT, CHUNK_SIZE) == CHUNK_SAME)
 		{
-			// ƒ`ƒƒƒ“ƒN‚ÆƒTƒCƒY‚ğİ’è
+			// ãƒãƒ£ãƒ³ã‚¯ã¨ã‚µã‚¤ã‚ºã‚’è¨­å®š
 			memcpy(wavFile.fmt.fmtChunk, chunk, CHUNK_SIZE);
 			wavFile.fmt.fmtSize = size;
 
-			// ƒtƒH[ƒ}ƒbƒgID‚©‚ç“Ç‚İ‚İ
+			// ãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆIDã‹ã‚‰èª­ã¿è¾¼ã¿
 			fread(&wavFile.fmt.fmtFormatTag,
 				sizeof(FMT_CHUNK) - 8, 1, fp);
 
-			// ƒtƒ‰ƒOˆ—
+			// ãƒ•ãƒ©ã‚°å‡¦ç†
 			chunkFlag += FLAG_CHUNK_FMT;
 
 			continue;
 		}
 
-		// dataƒ`ƒƒƒ“ƒN
+		// dataãƒãƒ£ãƒ³ã‚¯
 		if (memcmp(chunk, CHUNK_DATA, CHUNK_SIZE) == CHUNK_SAME)
 		{
-			// ƒ`ƒƒƒ“ƒN‚ÆƒTƒCƒY‚ğİ’è
+			// ãƒãƒ£ãƒ³ã‚¯ã¨ã‚µã‚¤ã‚ºã‚’è¨­å®š
 			memcpy(wavFile.data.dataChunk, CHUNK_DATA, CHUNK_SIZE);
 			wavFile.data.waveSize = size;
 
-			// ƒƒ‚ƒŠŠm•Û
+			// ãƒ¡ãƒ¢ãƒªç¢ºä¿
 			wavFile.data.waveData = (short *)malloc(wavFile.data.waveSize);
 
-			// ”gŒ`‚Ì“Ç‚İ‚İ
+			// æ³¢å½¢ã®èª­ã¿è¾¼ã¿
 			fread(wavFile.data.waveData, wavFile.data.waveSize, 1, fp);
 
-			// ƒtƒ‰ƒOˆ—
+			// ãƒ•ãƒ©ã‚°å‡¦ç†
 			chunkFlag += FLAG_CHUNK_DATA;
 
 			continue;
 		}
 
-		// ‘¼‚Ìƒ`ƒƒƒ“ƒN
+		// ä»–ã®ãƒãƒ£ãƒ³ã‚¯
 		else
 		{
-			// size•ª‚ğskip
+			// sizeåˆ†ã‚’skip
 			fseek(fp, size, SEEK_CUR);
 		}
 	}
 
-	/* wav\‘¢‘Ì‚Ì‰Šú‰» */
+	/* wavæ§‹é€ ä½“ã®åˆæœŸåŒ– */
 	pcm.cbSize = 0;
 	pcm.nChannels = wavFile.fmt.fmtChannel;
 	pcm.wBitsPerSample = wavFile.fmt.fmtBitPerSample;
@@ -150,7 +149,7 @@ WAVEFORMATEX LOAD_WAV::LoadWavFile(const char *path)
 }
 
 //*****************************************************************************
-// WAVƒtƒ@ƒCƒ‹‚Ìî•ñ‚ğæ“¾
+// WAVãƒ•ã‚¡ã‚¤ãƒ«ã®æƒ…å ±ã‚’å–å¾—
 //*****************************************************************************
 WAV_FILE LOAD_WAV::GetWavFile(void)
 {
