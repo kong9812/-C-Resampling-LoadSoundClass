@@ -3,10 +3,10 @@
 //=============================================================================
 // プロトタイプ宣言
 //=============================================================================
-void Init(void);		// 初期化
-void Uninit(void);		// 終了処理
-void Resampling(void);	// 再サンプリング
-void OutputFile(void);	// ファイルの書き出し
+void Init(void);				// 初期化
+void Uninit(void);				// 終了処理
+void Resampling(void);			// 再サンプリング
+void OutputFile(short *wave);	// ファイルの書き出し
 
 //=============================================================================
 // グローバル変数
@@ -54,42 +54,51 @@ void Resampling(void)
 	float soundLengh = ((float)wav.data.waveSize / wav.fmt.fmtSampleRate / wav.fmt.fmtChannel / sizeof(short));
 
 	// ヘッダー情報
-	wav.fmt.fmtSampleRate		= 40000;
+	wav.fmt.fmtSampleRate		= 48000;
 	wav.fmt.fmtAvgBytesPerSec	= wav.fmt.fmtSampleRate*wav.fmt.fmtBlockAlign;
-	wav.data.waveSize			= (long)((wav.fmt.fmtSampleRate*(wav.fmt.fmtBitPerSample / 8)) * soundLengh);
+	wav.data.waveSize = (long)(wav.fmt.fmtSampleRate * wav.fmt.fmtChannel * soundLengh * sizeof(short));
 
 	// バッファ
-	short *newBuf = (short *)malloc(sizeof(short) * wav.data.waveSize);
+	short *newBuf = (short *)malloc(wav.data.waveSize);
+	memset(newBuf, 0, wav.data.waveSize);
 
-	for (int i = 0; i < wav.data.waveSize; i++)
+	for (int i = 0; i < (wav.data.waveSize / (int)sizeof(short) / wav.fmt.fmtChannel); i++)
 	{
-		int readPos = (int)((float)i * (oldSample / wav.fmt.fmtSampleRate));
+		int		readPos = (int)((float)i * (oldSample / wav.fmt.fmtSampleRate));
+		float	tmpPos	= (float)i * (oldSample / wav.fmt.fmtSampleRate);
 
-		newBuf[i] = wav.data.waveData[readPos];
+		tmpPos -= (int)tmpPos;
+
+		for (int j = 0; j < wav.fmt.fmtChannel; j++)
+		{
+			newBuf[i * wav.fmt.fmtChannel + j] =
+				(short)(wav.data.waveData[readPos*wav.fmt.fmtChannel + j] + ((float)(wav.data.waveData[readPos *wav.fmt.fmtChannel + j] - wav.data.waveData[readPos*wav.fmt.fmtChannel + j]) * tmpPos));
+		}
 	}
 
-	wav.data.waveData = newBuf;
-
 	// ファイルの書き出し
-	OutputFile();
+	OutputFile(newBuf);
+
+	if (newBuf != NULL)
+	{
+		free(newBuf);
+		newBuf = NULL;
+	}
 }
 
 //=============================================================================
 // ファイルの書き出し
 //=============================================================================
-void OutputFile(void)
+void OutputFile(short *wave)
 {
 	FILE *fp;
 	fp = fopen(OUTPUT_PATH, "wb");
 
 	fwrite(&wav.riff, sizeof(RIFF_CHUNK), 1, fp);
 	fwrite(&wav.fmt, sizeof(FMT_CHUNK), 1, fp);
-	fwrite(&wav.data, sizeof(DATA_CHUNK) - sizeof(short), 1, fp);
+	fwrite(&wav.data, sizeof(DATA_CHUNK) - 4, 1, fp);
 
-	for (int i = 0; i < wav.data.waveSize; i++)
-	{
-		fwrite(&wav.data.waveData[i], sizeof(short), 1, fp);
-	}
+	fwrite(wave, wav.data.waveSize, 1, fp);
 
 	fclose(fp);
 }
@@ -101,10 +110,4 @@ void Uninit(void)
 {
 	// サウンド読み込みの終了処理
 	delete wavfile;
-
-	if (wav.data.waveData != NULL)
-	{
-		free(wav.data.waveData);
-		wav.data.waveData = NULL;
-	}
 }

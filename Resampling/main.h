@@ -23,12 +23,4 @@
 #define OUTPUT_PATH		("test.wav")
 
 
-
-
-
-
-
-
-
-
 #endif
